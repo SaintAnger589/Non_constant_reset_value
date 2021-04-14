@@ -104,9 +104,58 @@ The solution for designing this non-constant type circuit is described below. Th
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Single bit Register method}
 
-Since 
+Since the value change in the single bit can be 1 or 0, reset_val can be combined with rst_n in the following manner
+
+\begin{verbatim}
+module test(
+  input clk,
+  input rst_n,
+  input reset_val,
+  input val
+  output reg reg1
+);
+
+
+assign rst_int  = rst_n | reset_val;
+assign prst_int = rst_n | !reset_val;
+
+always @(posedge clk 
+         or negedge rst_int 
+         or negedge prst_int) 
+begin
+  if (!rst_n) 
+  begin
+    reg1 <= 1'b0;
+  end else if (!prst_int)
+  begin
+    reg1 <= 1'b1;
+  end
+    reg1 <= val;
+end
+\end{verbatim}
+
+This can be explained as follows in the truth table
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tables}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% begin table   %%%%%%%%%%%%%%%%%%%%%%%%%%
+\caption{Truth table for the single bit non constant reset value}
+\begin{center}
+\begin{tabular}{c l l l l l l}
+& & \\ % put some space after the caption
+\hline
+rst\_n& reset\_val & rst\_int & prst\_int & reg\_value \\
+\hline
+0 & 1 & 1 & 0 & 1 \\
+0 & 0 & 0 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+%%%%%%%%%%%%%%%% end table %%%%%%%%%%%%%%%%%%% 
+
 \section{Very Very Very Very Very Very Very Very Very Very Very Long Heading}
 
 The heading is boldface with upper and lower case letters. 
